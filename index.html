@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8" />
+		<title>晩御飯ルーレット</title>
+
+		<style>
+			body {
+			  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+			  padding: 10px;
+			  background: linear-gradient(#fceabb, #f8b500);
+			  text-align: center;
+			  font-size: 28px;
+			}
+
+			/* タイトル */
+			h2 {
+			  font-size: 40px;
+			}
+
+			/* ボタン */
+			button {
+			  width: 95%;
+			  max-width: 450px;
+			  padding: 40px;
+			  margin: 15px 0;
+			  font-size: 36px;
+			  font-weight: bold;
+			  color: white;
+			  border: none;
+			  border-radius: 25px;
+			  background: linear-gradient(135deg, #ff6a88, #ff99ac);
+			  box-shadow: 0 10px 0 #cc4b66;
+			}
+
+			button:active {
+			  transform: translateY(6px);
+			  box-shadow: 0 4px 0 #cc4b66;
+			}
+
+			/* 入力 */
+			input {
+			  width: 85%;
+			  padding: 15px;
+			  font-size: 26px;
+			  margin: 10px;
+			  border-radius: 10px;
+			}
+
+			/* 結果カード */
+			.day {
+			  margin: 20px auto;
+			  padding: 20px;
+			  max-width: 800px;
+			  background: white;
+			  border-radius: 20px;
+			  font-size: 60px;
+			  animation: pop 0.4s ease;
+			}
+
+			/* アニメ */
+			@keyframes pop {
+			  0% { transform: scale(0.5); }
+			  100% { transform: scale(1); }
+			}
+
+			/* ルーレット */
+			#roulette {
+			  margin: 20px auto;
+			  width: 220px;
+			  height: 220px;
+			  display: none;
+			}
+
+			.wheel {
+			  width: 100%;
+			  height: 100%;
+			  border-radius: 50%;
+			  background: conic-gradient(
+			    #ff6a88 0deg 90deg,
+			    #ffcc70 90deg 180deg,
+			    #6a89ff 180deg 270deg,
+			    #6affc1 270deg 360deg
+			  );
+			}
+
+			/* 表 */
+			table {
+			  width: 100%;
+			  max-width: 800px;
+			  margin: auto;
+			  border-collapse: collapse;
+			  font-size: 40px;
+			}
+
+			th, td {
+			  border: 2px solid #333;
+			  padding: 10px;
+			}
+
+			th {
+			  background: #ffcc70;
+			}
+
+			.delete {
+			  color: red;
+			  cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body>
+		<h2>🍽 晩御飯ルーレット</h2>
+
+		<button onclick="startRoulette('normal')">🎯 通常ルーレット</button>
+		<button onclick="startRoulette('easy')">⚡ 簡単メイン多め</button>
+
+		<div id="roulette">
+			<div class="wheel"></div>
+		</div>
+
+		<div id="result"></div>
+
+		<hr />
+
+		<h3>メニュー追加</h3>
+
+		<input id="mainInput" placeholder="主菜" />
+		<button onclick="addItem('main')">主菜追加</button>
+
+		<input id="hardInput" placeholder="特に手の込んだ主菜" />
+		<button onclick="addItem('hard')">特に手の込んだ主菜追加</button>
+
+		<input id="sideInput" placeholder="副菜" />
+		<button onclick="addItem('side')">副菜追加</button>
+
+		<input id="soupInput" placeholder="味噌汁" />
+		<button onclick="addItem('soup')">味噌汁追加</button>
+
+		<hr />
+
+		<h3>メニュー一覧</h3>
+
+		<table>
+			<tr>
+				<th>主菜</th>
+				<th>特に手の込んだ主菜</th>
+				<th>副菜</th>
+				<th>味噌汁</th>
+			</tr>
+			<tr>
+				<td id="mainList"></td>
+				<td id="hardList"></td>
+				<td id="sideList"></td>
+				<td id="soupList"></td>
+			</tr>
+		</table>
+
+		<script>
+
+			// データ
+			var mainDishes = ["唐揚げ","餃子","回鍋肉","手羽先揚げ","焼き魚"];
+			var hardDishes = ["ハンバーグ","カレー","グラタン"];
+			var sideDishes = ["サラダ","冷奴"];
+			var soups = ["味噌汁"];
+
+			// 追加
+			function addItem(type){
+			  var input, array;
+
+			  if(type==="main"){input=mainInput; array=mainDishes;}
+			  if(type==="hard"){input=hardInput; array=hardDishes;}
+			  if(type==="side"){input=sideInput; array=sideDishes;}
+			  if(type==="soup"){input=soupInput; array=soups;}
+
+			  if(input.value==="") return;
+
+			  array.push(input.value);
+			  input.value="";
+			  renderList();
+			}
+
+			// 削除
+			function deleteItem(type,index){
+			  if(type==="main") mainDishes.splice(index,1);
+			  if(type==="hard") hardDishes.splice(index,1);
+			  if(type==="side") sideDishes.splice(index,1);
+			  if(type==="soup") soups.splice(index,1);
+			  renderList();
+			}
+
+			// 表示
+			function renderList(){
+			  function make(arr,type){
+			    var html="";
+			    for(var i=0;i<arr.length;i++){
+			      html+=arr[i]+"<br><span class='delete' onclick=\"deleteItem('"+type+"',"+i+")\">削除</span><br>";
+			    }
+			    return html;
+			  }
+
+			  mainList.innerHTML = make(mainDishes,"main");
+			  hardList.innerHTML = make(hardDishes,"hard");
+			  sideList.innerHTML = make(sideDishes,"side");
+			  soupList.innerHTML = make(soups,"soup");
+			}
+
+			// ルーレット開始
+			function startRoulette(mode){
+
+			  result.innerHTML="";
+			  roulette.style.display="block";
+
+			  var wheel=document.querySelector(".wheel");
+
+			  // 加速
+			  wheel.style.animation="spin 0.2s linear infinite";
+
+			  setTimeout(function(){
+			    wheel.style.animation="spin 0.5s linear infinite";
+			  },500);
+
+			  setTimeout(function(){
+			    wheel.style.animation="spin 1s linear infinite";
+			  },1000);
+
+			  // 停止
+			  setTimeout(function(){
+			    wheel.style.animation="none";
+			    roulette.style.display="none";
+			    generateMenu(mode);
+			  },2000);
+			}
+
+			// 回転アニメ
+			var style = document.createElement('style');
+			style.innerHTML = "@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}";
+			document.head.appendChild(style);
+
+			// ロジック
+			function getRandom(arr){
+			  return arr[Math.floor(Math.random()*arr.length)];
+			}
+
+			function shuffle(a){
+			  return a.sort(function(){return Math.random()-0.5});
+			}
+
+			function generateMenu(mode){
+
+			  var normal = shuffle(mainDishes.slice());
+			  var hard = shuffle(hardDishes.slice());
+
+			  for(var i=0;i<5;i++){
+
+			    var main;
+
+			    if(mode==="normal"){
+			      main = (i<2) ? hard[i%hard.length] : normal[i%normal.length];
+			    }
+
+			    if(mode==="easy"){
+			      main = (i===0) ? hard[0] : normal[i%normal.length];
+			    }
+
+			    result.innerHTML +=
+			      "<div class='day'>" +
+			      "✨ "+(i+1)+"日目<br>" +
+			      "🍖 "+main+"<br>" +
+			      "🥗 "+getRandom(sideDishes)+"<br>" +
+			      "🍲 "+getRandom(soups) +
+			      "</div>";
+			  }
+			}
+
+			renderList();
+		</script>
+	</body>
+</html>
