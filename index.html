@@ -204,10 +204,16 @@ function renderList(){
     let html="";
     for(let i=0;i<arr.length;i++){
       html += arr[i] +
-        "<br><span class='delete' onclick="deleteItem('" + type + "'," + i + ")">削除</span><br>";
+        "<br><span class='delete' onclick=\"deleteItem('" + type + "'," + i + ")\">削除</span><br>";
     }
     return html;
   }
+
+  mainList.innerHTML = make(mainDishes,"main");
+  hardList.innerHTML = make(hardDishes,"hard");
+  sideList.innerHTML = make(sideDishes,"side");
+  soupList.innerHTML = make(soups,"soup");
+}
 
   mainList.innerHTML = make(mainDishes,"main");
   hardList.innerHTML = make(hardDishes,"hard");
