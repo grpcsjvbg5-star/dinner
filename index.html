@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>晩御飯ルーレット</title>
 
 <style>
-/* ===== 画面全体 ===== /
+/* ===== 画面全体 ===== */
 body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   padding: 10px;
@@ -16,56 +16,56 @@ body {
 
 h2 { font-size: 40px; }
 
-/ ===== ボタン ===== /
+/* ===== ボタン ===== */
 button {
   width: 95%;
-  max-width: 600px;
-  padding: 40px;
+  max-width: 550px;
+  padding: 30px;
   margin: 15px 0;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
   color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 20px;
   background: linear-gradient(135deg, #ff6a88, #ff99ac);
-  box-shadow: 0 10px 0 #cc4b66;
+  box-shadow: 0 8px 0 #cc4b66;
 }
 
 button:active {
-  transform: translateY(6px);
-  box-shadow: 0 4px 0 #cc4b66;
+  transform: translateY(5px);
+  box-shadow: 0 3px 0 #cc4b66;
 }
 
-/ ===== 入力欄 ===== /
+/* ===== 入力欄 ===== */
 input {
   width: 85%;
-  padding: 15px;
-  font-size: 26px;
+  padding: 12px;
+  font-size: 24px;
   margin: 10px;
   border-radius: 10px;
 }
 
-/ ===== 結果表示 ===== /
+/* ===== 結果表示 ===== */
 .day {
   margin: 20px auto;
   padding: 20px;
   max-width: 800px;
   background: white;
   border-radius: 20px;
-  font-size: 60px;
-  animation: pop 0.4s ease;
+  font-size: 50px;
+  animation: pop 0.3s ease;
 }
 
 @keyframes pop {
-  0% { transform: scale(0.5); }
+  0% { transform: scale(0.7); }
   100% { transform: scale(1); }
 }
 
-/ ===== ルーレット ===== /
+/* ===== ルーレット ===== */
 #roulette {
   margin: 20px auto;
-  width: 220px;
-  height: 220px;
+  width: 200px;
+  height: 200px;
   display: none;
 }
 
@@ -81,18 +81,18 @@ input {
   );
 }
 
-/ ===== テーブル ===== /
+/* ===== テーブル ===== */
 table {
   width: 100%;
   max-width: 800px;
   margin: auto;
   border-collapse: collapse;
-  font-size: 30px;
+  font-size: 26px;
 }
 
 th, td {
   border: 2px solid #333;
-  padding: 10px;
+  padding: 8px;
 }
 
 th { background: #ffcc70; }
@@ -108,13 +108,8 @@ th { background: #ffcc70; }
 
 <h2>🍽 晩御飯ルーレット</h2>
 
-<button onclick="startRoulette('normal')">
-🎯 晩ごはんルーレット
-</button>
-
-<button onclick="startRoulette('easy')">
-⚡ 手の込んだメニューも
-</button>
+<button onclick="startRoulette('normal')">🎯 晩ごはんルーレット</button>
+<button onclick="startRoulette('easy')">⚡ 手の込んだメニューも</button>
 
 <div id="roulette">
   <div class="wheel"></div>
@@ -122,23 +117,23 @@ th { background: #ffcc70; }
 
 <div id="result"></div>
 
-<hr />
+<hr>
 
 <h3>メニュー追加</h3>
 
-<input id="mainInput" placeholder="主菜" />
-<button onclick="addItem('main')">主菜追加</button>
+<input id="mainInput" placeholder="主菜">
+<button onclick="addItem('main')">主菜</button>
 
-<input id="hardInput" placeholder="特に手の込んだ主菜" />
-<button onclick="addItem('hard')">特に手の込んだ主菜追加</button>
+<input id="hardInput" placeholder="特に手の込んだ主菜">
+<button onclick="addItem('hard')">追加</button>
 
-<input id="sideInput" placeholder="副菜" />
-<button onclick="addItem('side')">副菜追加</button>
+<input id="sideInput" placeholder="副菜">
+<button onclick="addItem('side')">追加</button>
 
-<input id="soupInput" placeholder="味噌汁" />
-<button onclick="addItem('soup')">味噌汁追加</button>
+<input id="soupInput" placeholder="味噌汁">
+<button onclick="addItem('soup')">追加</button>
 
-<hr />
+<hr>
 
 <h3>メニュー一覧</h3>
 
@@ -159,13 +154,13 @@ th { background: #ffcc70; }
 
 <script>
 
-/ ===== データ（保存対応） ===== /
-var mainDishes = JSON.parse(localStorage.getItem("mainDishes")) || ["唐揚げ","餃子","回鍋肉","手羽先揚げ","焼き魚"];
-var hardDishes = JSON.parse(localStorage.getItem("hardDishes")) || ["ハンバーグ","カレー","グラタン"];
-var sideDishes = JSON.parse(localStorage.getItem("sideDishes")) || ["サラダ","冷奴"];
-var soups = JSON.parse(localStorage.getItem("soups")) || ["味噌汁"];
+// ===== データ =====
+let mainDishes = JSON.parse(localStorage.getItem("mainDishes")) || ["唐揚げ","餃子","回鍋肉","手羽先揚げ","焼き魚"];
+let hardDishes = JSON.parse(localStorage.getItem("hardDishes")) || ["ハンバーグ","カレー","グラタン"];
+let sideDishes = JSON.parse(localStorage.getItem("sideDishes")) || ["サラダ","冷奴"];
+let soups = JSON.parse(localStorage.getItem("soups")) || ["味噌汁"];
 
-/ ===== 保存 ===== /
+// ===== 保存 =====
 function saveData(){
   localStorage.setItem("mainDishes", JSON.stringify(mainDishes));
   localStorage.setItem("hardDishes", JSON.stringify(hardDishes));
@@ -173,16 +168,16 @@ function saveData(){
   localStorage.setItem("soups", JSON.stringify(soups));
 }
 
-/ ===== 追加 ===== /
+// ===== 追加 =====
 function addItem(type){
-  var input, array;
+  let input, array;
 
   if(type==="main"){input=mainInput; array=mainDishes;}
   if(type==="hard"){input=hardInput; array=hardDishes;}
   if(type==="side"){input=sideInput; array=sideDishes;}
   if(type==="soup"){input=soupInput; array=soups;}
 
-  if(input.value==="") return;
+  if(input.value.trim()==="") return;
 
   array.push(input.value);
   input.value="";
@@ -191,7 +186,7 @@ function addItem(type){
   renderList();
 }
 
-/ ===== 削除 ===== /
+// ===== 削除 =====
 function deleteItem(type,index){
   if(type==="main") mainDishes.splice(index,1);
   if(type==="hard") hardDishes.splice(index,1);
@@ -202,12 +197,14 @@ function deleteItem(type,index){
   renderList();
 }
 
-/ ===== 表示 ===== /
+// ===== 表示 =====
 function renderList(){
+
   function make(arr,type){
-    var html="";
-    for(var i=0;i<arr.length;i++){
-      html+=arr[i]+"<br><span class='delete' onclick="deleteItem('"+type+"',"+i+")">削除</span><br>";
+    let html="";
+    for(let i=0;i<arr.length;i++){
+      html += arr[i] +
+        "<br><span class='delete' onclick="deleteItem('" + type + "'," + i + ")">削除</span><br>";
     }
     return html;
   }
@@ -218,55 +215,52 @@ function renderList(){
   soupList.innerHTML = make(soups,"soup");
 }
 
-/ ===== ルーレット開始 ===== /
+// ===== ルーレット =====
 function startRoulette(mode){
 
   result.innerHTML="";
   roulette.style.display="block";
 
-  var wheel=document.querySelector(".wheel");
+  let wheel=document.querySelector(".wheel");
   wheel.style.animation="spin 0.3s linear infinite";
 
-  setTimeout(function(){
+  setTimeout(()=>{
     wheel.style.animation="none";
     roulette.style.display="none";
     generateMenu(mode);
   },2000);
 }
 
-/ ===== 回転アニメ ===== /
-var style = document.createElement('style');
+// ===== 回転 =====
+let style = document.createElement('style');
 style.innerHTML = "@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}";
 document.head.appendChild(style);
 
-/ ===== ランダム1件 ===== */
+// ===== ランダム =====
 function getRandom(arr){
-  return arr[Math.floor(Math.random()arr.length)];
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-/ ===== シャッフル ===== /
+// ===== シャッフル =====
 function shuffle(array){
   return [...array].sort(() => 0.5 - Math.random());
 }
 
-/ ===== メニュー生成（重要） ===== /
+// ===== メニュー生成 =====
 function generateMenu(mode){
 
   result.innerHTML = "";
   let selectedMains = [];
 
-  if(mode === "normal"){
-    // 主菜のみ5日
+  if(mode==="normal"){
     selectedMains = shuffle(mainDishes).slice(0,5);
-
-  } else if(mode === "easy"){
-    // 手の込んだ2 + 主菜3
-    const hard = shuffle(hardDishes).slice(0,2);
-    const main = shuffle(mainDishes).slice(0,3);
+  } else {
+    let hard = shuffle(hardDishes).slice(0,2);
+    let main = shuffle(mainDishes).slice(0,3);
     selectedMains = shuffle([...hard, ...main]);
   }
 
-  for(var i=0;i<selectedMains.length;i++){
+  for(let i=0;i<selectedMains.length;i++){
     result.innerHTML +=
       "<div class='day'>" +
       "✨ "+(i+1)+"日目<br>" +
@@ -277,7 +271,7 @@ function generateMenu(mode){
   }
 }
 
-/ 初期表示 */
+// 初期表示
 renderList();
 
 </script>
