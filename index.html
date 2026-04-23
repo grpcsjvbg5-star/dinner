@@ -137,6 +137,12 @@ th { background: #ffcc70; }
 
 <h3>メニュー一覧</h3>
 
+<h3>メニュー一覧</h3>
+
+<button onclick="backupData()">💾 バックアップ保存</button>
+<br><br>
+<input type="file" onchange="restoreData(event)">
+  
 <table>
 <tr>
 <th>主菜</th>
@@ -279,6 +285,48 @@ function generateMenu(mode){
 
 // 初期表示
 renderList();
+
+// 初期表示
+renderList();
+
+// ===== バックアップ =====
+function backupData(){
+  const data = {
+    mainDishes,
+    hardDishes,
+    sideDishes,
+    soups
+  };
+
+  const blob = new Blob([JSON.stringify(data)], {type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "menu_backup.json";
+  a.click();
+}
+
+
+// ===== 復元 =====
+function restoreData(event){
+  const file = event.target.files[0];
+  if(!file) return;
+
+  const reader = new FileReader();
+
+  reader.onload = function(e){
+    const data = JSON.parse(e.target.result);
+
+    mainDishes = data.mainDishes || [];
+    hardDishes = data.hardDishes || [];
+    sideDishes = data.sideDishes || [];
+    soups = data.soups || [];
+
+    saveData();
+    renderList();
+  };
+
+  reader.readAsText(file);
+}
 
 </script>
 
