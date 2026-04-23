@@ -17,7 +17,7 @@ h2 { font-size: 40px; }
 
 button {
   width: 95%;
-  max-width: 450px;
+  max-width: 500px;
   padding: 40px;
   margin: 15px 0;
   font-size: 36px;
@@ -102,8 +102,8 @@ th { background: #ffcc70; }
 
 <h2>🍽 晩御飯ルーレット</h2>
 
-<button onclick="startRoulette('normal')">🎯 晩ごはんルーレット</button>
-<button onclick="startRoulette('easy')">⚡ 手間多めメニュー</button>
+<button onclick="startRoulette('normal')">🎯 晩ごはんルーレット（主菜のみ）</button>
+<button onclick="startRoulette('easy')">⚡ 手の込んだメニュー（2品＋主菜3品）</button>
 
 <div id="roulette">
   <div class="wheel"></div>
@@ -233,18 +233,33 @@ function getRandom(arr){
   return arr[Math.floor(Math.random()*arr.length)];
 }
 
+function shuffle(array){
+  return [...array].sort(() => 0.5 - Math.random());
+}
+
 function generateMenu(mode){
 
-  for(var i=0;i<5;i++){
+  result.innerHTML = "";
 
-    var main = (mode==="easy" && i===0)
-      ? hardDishes[0]
-      : getRandom(mainDishes.concat(hardDishes));
+  let selectedMains = [];
 
+  if(mode === "normal"){
+    // 主菜だけで5日分
+    selectedMains = shuffle(mainDishes).slice(0,5);
+
+  } else if(mode === "easy"){
+    // 手の込んだ主菜2 + 主菜3
+    const hard = shuffle(hardDishes).slice(0,2);
+    const main = shuffle(mainDishes).slice(0,3);
+
+    selectedMains = shuffle([...hard, ...main]);
+  }
+
+  for(var i=0;i<selectedMains.length;i++){
     result.innerHTML +=
       "<div class='day'>" +
       "✨ "+(i+1)+"日目<br>" +
-      "🍖 "+main+"<br>" +
+      "🍖 "+selectedMains[i]+"<br>" +
       "🥗 "+getRandom(sideDishes)+"<br>" +
       "🍲 "+getRandom(soups) +
       "</div>";
