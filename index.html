@@ -5,6 +5,7 @@
 <title>晩御飯ルーレット</title>
 
 <style>
+/* ===== 画面全体 ===== /
 body {
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   padding: 10px;
@@ -15,9 +16,10 @@ body {
 
 h2 { font-size: 40px; }
 
+/ ===== ボタン ===== /
 button {
   width: 95%;
-  max-width: 500px;
+  max-width: 600px;
   padding: 40px;
   margin: 15px 0;
   font-size: 36px;
@@ -34,6 +36,7 @@ button:active {
   box-shadow: 0 4px 0 #cc4b66;
 }
 
+/ ===== 入力欄 ===== /
 input {
   width: 85%;
   padding: 15px;
@@ -42,6 +45,7 @@ input {
   border-radius: 10px;
 }
 
+/ ===== 結果表示 ===== /
 .day {
   margin: 20px auto;
   padding: 20px;
@@ -57,6 +61,7 @@ input {
   100% { transform: scale(1); }
 }
 
+/ ===== ルーレット ===== /
 #roulette {
   margin: 20px auto;
   width: 220px;
@@ -76,6 +81,7 @@ input {
   );
 }
 
+/ ===== テーブル ===== /
 table {
   width: 100%;
   max-width: 800px;
@@ -102,8 +108,13 @@ th { background: #ffcc70; }
 
 <h2>🍽 晩御飯ルーレット</h2>
 
-<button onclick="startRoulette('normal')">🎯 晩ごはんルーレット（主菜のみ）</button>
-<button onclick="startRoulette('easy')">⚡ 手の込んだメニュー（2品＋主菜3品）</button>
+<button onclick="startRoulette('normal')">
+🎯 晩ごはんルーレット（主菜のみ）
+</button>
+
+<button onclick="startRoulette('easy')">
+⚡ 手の込んだメニュー（2品＋主菜3品）
+</button>
 
 <div id="roulette">
   <div class="wheel"></div>
@@ -148,13 +159,13 @@ th { background: #ffcc70; }
 
 <script>
 
-// ★ データ（保存対応版）
+/ ===== データ（保存対応） ===== /
 var mainDishes = JSON.parse(localStorage.getItem("mainDishes")) || ["唐揚げ","餃子","回鍋肉","手羽先揚げ","焼き魚"];
 var hardDishes = JSON.parse(localStorage.getItem("hardDishes")) || ["ハンバーグ","カレー","グラタン"];
 var sideDishes = JSON.parse(localStorage.getItem("sideDishes")) || ["サラダ","冷奴"];
 var soups = JSON.parse(localStorage.getItem("soups")) || ["味噌汁"];
 
-// ★ 保存処理
+/ ===== 保存 ===== /
 function saveData(){
   localStorage.setItem("mainDishes", JSON.stringify(mainDishes));
   localStorage.setItem("hardDishes", JSON.stringify(hardDishes));
@@ -162,7 +173,7 @@ function saveData(){
   localStorage.setItem("soups", JSON.stringify(soups));
 }
 
-// ★ 追加
+/ ===== 追加 ===== /
 function addItem(type){
   var input, array;
 
@@ -176,27 +187,27 @@ function addItem(type){
   array.push(input.value);
   input.value="";
 
-  saveData();   // ←保存
+  saveData();
   renderList();
 }
 
-// ★ 削除
+/ ===== 削除 ===== /
 function deleteItem(type,index){
   if(type==="main") mainDishes.splice(index,1);
   if(type==="hard") hardDishes.splice(index,1);
   if(type==="side") sideDishes.splice(index,1);
   if(type==="soup") soups.splice(index,1);
 
-  saveData();   // ←保存
+  saveData();
   renderList();
 }
 
-// ★ 表示
+/ ===== 表示 ===== /
 function renderList(){
   function make(arr,type){
     var html="";
     for(var i=0;i<arr.length;i++){
-      html+=arr[i]+"<br><span class='delete' onclick=\"deleteItem('"+type+"',"+i+")\">削除</span><br>";
+      html+=arr[i]+"<br><span class='delete' onclick="deleteItem('"+type+"',"+i+")">削除</span><br>";
     }
     return html;
   }
@@ -207,7 +218,7 @@ function renderList(){
   soupList.innerHTML = make(soups,"soup");
 }
 
-// ★ ルーレット
+/ ===== ルーレット開始 ===== /
 function startRoulette(mode){
 
   result.innerHTML="";
@@ -223,35 +234,35 @@ function startRoulette(mode){
   },2000);
 }
 
-// ★ アニメ
+/ ===== 回転アニメ ===== /
 var style = document.createElement('style');
 style.innerHTML = "@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}";
 document.head.appendChild(style);
 
-// ★ ロジック
+/ ===== ランダム1件 ===== */
 function getRandom(arr){
-  return arr[Math.floor(Math.random()*arr.length)];
+  return arr[Math.floor(Math.random()arr.length)];
 }
 
+/ ===== シャッフル ===== /
 function shuffle(array){
   return [...array].sort(() => 0.5 - Math.random());
 }
 
+/ ===== メニュー生成（重要） ===== /
 function generateMenu(mode){
 
   result.innerHTML = "";
-
   let selectedMains = [];
 
   if(mode === "normal"){
-    // 主菜だけで5日分
+    // 主菜のみ5日
     selectedMains = shuffle(mainDishes).slice(0,5);
 
   } else if(mode === "easy"){
-    // 手の込んだ主菜2 + 主菜3
+    // 手の込んだ2 + 主菜3
     const hard = shuffle(hardDishes).slice(0,2);
     const main = shuffle(mainDishes).slice(0,3);
-
     selectedMains = shuffle([...hard, ...main]);
   }
 
@@ -266,6 +277,7 @@ function generateMenu(mode){
   }
 }
 
+/ 初期表示 */
 renderList();
 
 </script>
