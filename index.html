@@ -3,119 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>晩御飯ルーレット</title>
+<title>晩御飯ルーレット 完全版</title>
 
 <style>
-/* ===== 画面全体 ===== */
+/* ===== デザイン設定 ===== */
 body {
-  font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+  font-family: sans-serif;
   padding: 10px;
   background: linear-gradient(#fceabb, #f8b500);
   text-align: center;
-  font-size: 20px; /* 全体的に少し調整 */
+  color: #333;
 }
 
-h2 { font-size: 32px; color: #5d4037; }
+h2 { font-size: 28px; color: #5d4037; }
 
-/* ===== ボタン ===== */
+/* ボタンのデザイン */
 button {
-  width: 95%;
-  max-width: 550px;
-  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  padding: 15px;
   margin: 10px 0;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: bold;
   color: white;
   border: none;
-  border-radius: 20px;
+  border-radius: 15px;
   background: linear-gradient(135deg, #ff6a88, #ff99ac);
-  box-shadow: 0 6px 0 #cc4b66;
+  box-shadow: 0 5px 0 #cc4b66;
   cursor: pointer;
-  transition: 0.1s;
 }
 
 button:active {
-  transform: translateY(4px);
+  transform: translateY(3px);
   box-shadow: 0 2px 0 #cc4b66;
 }
 
-/* ===== 入力欄 ===== */
+/* 入力エリア */
+.input-section {
+  background: rgba(255, 255, 255, 0.7);
+  margin: 10px auto;
+  padding: 15px;
+  border-radius: 15px;
+  max-width: 500px;
+}
+
 input {
-  width: 80%;
-  max-width: 400px;
-  padding: 12px;
-  font-size: 18px;
-  margin: 10px;
-  border-radius: 10px;
+  width: 60%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
   border: 1px solid #ccc;
 }
 
-/* ===== 結果表示 ===== */
-.day {
-  margin: 20px auto;
-  padding: 20px;
-  max-width: 600px;
+.small-btn {
+  width: auto;
+  padding: 10px 15px;
+  font-size: 14px;
+  margin-left: 5px;
+}
+
+/* 結果表示 */
+.day-card {
+  margin: 15px auto;
+  padding: 15px;
+  max-width: 500px;
   background: white;
-  border-radius: 20px;
-  font-size: 28px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border-radius: 15px;
+  font-size: 22px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   animation: pop 0.3s ease;
 }
 
 @keyframes pop {
-  0% { transform: scale(0.7); opacity: 0; }
+  0% { transform: scale(0.8); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
 }
 
-/* ===== ルーレット ===== */
-#roulette {
+/* ルーレットの見た目 */
+#roulette-box {
   margin: 20px auto;
-  width: 150px;
-  height: 150px;
+  width: 80px;
+  height: 80px;
   display: none;
 }
 
-.wheel {
+.wheel-graphic {
   width: 100%;
   height: 100%;
   border-radius: 50%;
-  background: conic-gradient(
-    #ff6a88 0deg 90deg,
-    #ffcc70 90deg 180deg,
-    #6a89ff 180deg 270deg,
-    #6affc1 270deg 360deg
-  );
+  background: conic-gradient(#ff6a88, #ffcc70, #6a89ff, #6affc1);
+  animation: spin 0.2s linear infinite;
 }
 
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-/* ===== テーブル ===== */
+/* テーブル一覧 */
 table {
   width: 100%;
   max-width: 800px;
   margin: 20px auto;
   border-collapse: collapse;
-  font-size: 18px;
   background: white;
+  font-size: 14px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 12px 8px;
+  padding: 8px;
+  vertical-align: top;
+  text-align: center;
 }
 
 th { background: #ffcc70; }
 
-.delete {
-  display: inline-block;
-  margin-top: 5px;
+.delete-link {
   color: #ff4444;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 11px;
   text-decoration: underline;
+  display: block;
+  margin-top: 5px;
 }
 </style>
 </head>
@@ -124,200 +131,155 @@ th { background: #ffcc70; }
 
 <h2>🍽 晩御飯ルーレット</h2>
 
-<button onclick="startRoulette('normal')">🎯 晩ごはんルーレット</button>
-<button onclick="startRoulette('easy')">⚡ 手の込んだメニューも</button>
+<button onclick="startRoulette('normal')">🎯 5日分決める</button>
+<button onclick="startRoulette('easy')">⚡ 手間料理を含めて決める</button>
 
-<div id="roulette">
-  <div class="wheel" id="wheelInner"></div>
-</div>
-
-<div id="result"></div>
+<div id="roulette-box"><div class="wheel-graphic"></div></div>
+<div id="result-display"></div>
 
 <hr>
 
-<h3>メニュー追加</h3>
-
-<div>
-  <input id="mainInput" placeholder="主菜">
-  <button style="width:auto; padding:10px 20px; font-size:16px;" onclick="addItem('main')">主菜追加</button>
+<h3>メニューを追加する</h3>
+<div class="input-section">
+  <input type="text" id="addMain" placeholder="主菜（唐揚げなど）">
+  <button class="small-btn" onclick="handleAddItem('main')">追加</button>
 </div>
-<div>
-  <input id="hardInput" placeholder="特に手の込んだ主菜">
-  <button style="width:auto; padding:10px 20px; font-size:16px;" onclick="addItem('hard')">追加</button>
+<div class="input-section">
+  <input type="text" id="addHard" placeholder="手間料理（カレーなど）">
+  <button class="small-btn" onclick="handleAddItem('hard')">追加</button>
 </div>
-<div>
-  <input id="sideInput" placeholder="副菜">
-  <button style="width:auto; padding:10px 20px; font-size:16px;" onclick="addItem('side')">追加</button>
+<div class="input-section">
+  <input type="text" id="addSide" placeholder="副菜（サラダなど）">
+  <button class="small-btn" onclick="handleAddItem('side')">追加</button>
 </div>
-<div>
-  <input id="soupInput" placeholder="味噌汁">
-  <button style="width:auto; padding:10px 20px; font-size:16px;" onclick="addItem('soup')">追加</button>
+<div class="input-section">
+  <input type="text" id="addSoup" placeholder="汁物（味噌汁など）">
+  <button class="small-btn" onclick="handleAddItem('soup')">追加</button>
 </div>
 
 <hr>
 
-<h3>メニュー一覧</h3>
-
-<button style="width:auto; padding:10px; font-size:16px; background:#4CAF50; box-shadow: 0 4px 0 #2e7d32;" onclick="backupData()">💾 バックアップ保存</button>
-<br><br>
-<input type="file" id="fileInput" onchange="restoreData(event)" style="font-size: 14px;">
+<h3>登録済みメニュー</h3>
+<button class="small-btn" style="background:#4CAF50;" onclick="downloadBackup()">💾 バックアップを保存</button>
 
 <table>
-<tr>
-<th>主菜</th>
-<th>手の込んだ主菜</th>
-<th>副菜</th>
-<th>味噌汁</th>
-</tr>
-<tr>
-<td id="mainList"></td>
-<td id="hardList"></td>
-<td id="sideList"></td>
-<td id="soupList"></td>
-</tr>
+  <tr>
+    <th>主菜</th>
+    <th>手間主菜</th>
+    <th>副菜</th>
+    <th>汁物</th>
+  </tr>
+  <tr>
+    <td id="list-main"></td>
+    <td id="list-hard"></td>
+    <td id="list-side"></td>
+    <td id="list-soup"></td>
+  </tr>
 </table>
 
 <script>
-// ===== データ管理 =====
-let mainDishes = JSON.parse(localStorage.getItem("mainDishes")) || ["唐揚げ","餃子","回鍋肉","手羽先揚げ","焼き魚"];
-let hardDishes = JSON.parse(localStorage.getItem("hardDishes")) || ["ハンバーグ","カレー","グラタン"];
-let sideDishes = JSON.parse(localStorage.getItem("sideDishes")) || ["サラダ","冷奴"];
-let soups = JSON.parse(localStorage.getItem("soups")) || ["味噌汁"];
+// --- 1. データ管理 ---
+let data = {
+  main: JSON.parse(localStorage.getItem("mains")) || ["唐揚げ","餃子","焼き魚"],
+  hard: JSON.parse(localStorage.getItem("hards")) || ["カレー","ハンバーグ"],
+  side: JSON.parse(localStorage.getItem("sides")) || ["サラダ","冷奴"],
+  soup: JSON.parse(localStorage.getItem("soups")) || ["味噌汁"]
+};
 
-const resultDiv = document.getElementById("result");
-const rouletteDiv = document.getElementById("roulette");
-const wheelInner = document.getElementById("wheelInner");
-
-function saveData(){
-  localStorage.setItem("mainDishes", JSON.stringify(mainDishes));
-  localStorage.setItem("hardDishes", JSON.stringify(hardDishes));
-  localStorage.setItem("sideDishes", JSON.stringify(sideDishes));
-  localStorage.setItem("soups", JSON.stringify(soups));
+// --- 2. 画面への反映機能 ---
+function refreshUI() {
+  const types = ['main', 'hard', 'side', 'soup'];
+  
+  types.forEach(type => {
+    const td = document.getElementById(`list-${type}`);
+    td.innerHTML = ""; // 一旦空にする
+    
+    data[type].forEach((name, index) => {
+      const itemDiv = document.createElement("div");
+      itemDiv.style.marginBottom = "10px";
+      itemDiv.innerHTML = `${name} <span class="delete-link" onclick="handleRemoveItem('${type}', ${index})">削除</span>`;
+      td.appendChild(itemDiv);
+    });
+    
+    // 保存
+    localStorage.setItem(`${type}s`, JSON.stringify(data[type]));
+  });
 }
 
-// ===== 項目追加 =====
-function addItem(type){
-  let input, array;
-  if(type==="main"){ input=document.getElementById("mainInput"); array=mainDishes; }
-  if(type==="hard"){ input=document.getElementById("hardInput"); array=hardDishes; }
-  if(type==="side"){ input=document.getElementById("sideInput"); array=sideDishes; }
-  if(type==="soup"){ input=document.getElementById("soupInput"); array=soups; }
+// --- 3. 追加アクション ---
+function handleAddItem(type) {
+  // 入力欄のIDを特定
+  const inputId = "add" + type.charAt(0).toUpperCase() + type.slice(1);
+  const inputEl = document.getElementById(inputId);
+  const val = inputEl.value.trim();
 
-  if(!input.value.trim()) return;
-
-  array.push(input.value.trim());
-  input.value = "";
-  saveData();
-  renderList();
-}
-
-// ===== 項目削除 =====
-function deleteItem(type, index){
-  if(type==="main") mainDishes.splice(index,1);
-  if(type==="hard") hardDishes.splice(index,1);
-  if(type==="side") sideDishes.splice(index,1);
-  if(type==="soup") soups.splice(index,1);
-
-  saveData();
-  renderList();
-}
-
-// ===== リスト描画 =====
-function renderList(){
-  function makeHtml(arr, type){
-    return arr.map((item, index) => {
-      // クォーテーション競合を避けるためテンプレートリテラルを使用
-      return `${item}<br><span class="delete" onclick="deleteItem('${type}', ${index})">削除</span><br><br>`;
-    }).join("");
+  if (!val) {
+    alert("文字を入力してください");
+    return;
   }
 
-  document.getElementById("mainList").innerHTML = makeHtml(mainDishes,"main");
-  document.getElementById("hardList").innerHTML = makeHtml(hardDishes,"hard");
-  document.getElementById("sideList").innerHTML = makeHtml(sideDishes,"side");
-  document.getElementById("soupList").innerHTML = makeHtml(soups,"soup");
+  data[type].push(val); // 配列に追加
+  inputEl.value = "";   // 入力欄をクリア
+  refreshUI();          // 画面更新
 }
 
-// ===== ルーレット処理 =====
-function startRoulette(mode){
-  resultDiv.innerHTML = "";
-  rouletteDiv.style.display = "block";
-  wheelInner.style.animation = "spin 0.2s linear infinite";
+// --- 4. 削除アクション ---
+function handleRemoveItem(type, index) {
+  if (confirm("本当に削除しますか？")) {
+    data[type].splice(index, 1);
+    refreshUI();
+  }
+}
+
+// --- 5. ルーレット実行 ---
+function startRoulette(mode) {
+  const resultArea = document.getElementById("result-display");
+  const rBox = document.getElementById("roulette-box");
+  
+  resultArea.innerHTML = "";
+  rBox.style.display = "block";
 
   setTimeout(() => {
-    wheelInner.style.animation = "none";
-    rouletteDiv.style.display = "none";
-    generateMenu(mode);
-  }, 1500);
-}
+    rBox.style.display = "none";
+    
+    // メニューの選定
+    let pool = [];
+    if (mode === 'normal') {
+      pool = [...data.main];
+    } else {
+      pool = [...data.main, ...data.hard];
+    }
 
-function getRandom(arr){
-  return arr.length > 0 ? arr[Math.floor(Math.random() * arr.length)] : "（なし）";
-}
+    if (pool.length === 0) {
+      alert("メニューを登録してください");
+      return;
+    }
 
-function shuffle(array){
-  return [...array].sort(() => Math.random() - 0.5);
-}
+    // 5日分シャッフル
+    let selectedMains = [...pool].sort(() => 0.5 - Math.random()).slice(0, 5);
 
-// ===== メニュー生成 =====
-function generateMenu(mode){
-  let selectedMains = [];
-  
-  if(mode === "normal"){
-    selectedMains = shuffle(mainDishes).slice(0, 5);
-  } else {
-    let hard = shuffle(hardDishes).slice(0, 2);
-    let main = shuffle(mainDishes).slice(0, 3);
-    selectedMains = shuffle([...hard, ...main]);
-  }
-
-  let html = "";
-  selectedMains.forEach((dish, i) => {
-    html += `
-      <div class="day">
-        <div style="font-size:16px; color:#888;">Day ${i+1}</div>
+    resultArea.innerHTML = selectedMains.map((dish, i) => `
+      <div class="day-card">
+        <div style="font-size:14px; color:#999;">${i+1}日目</div>
         🍖 ${dish}<br>
-        🥗 ${getRandom(sideDishes)}<br>
-        🍲 ${getRandom(soups)}
-      </div>`;
-  });
-  resultDiv.innerHTML = html;
+        🥗 ${data.side[Math.floor(Math.random()*data.side.length)] || "なし"}<br>
+        🍲 ${data.soup[Math.floor(Math.random()*data.soup.length)] || "なし"}
+      </div>
+    `).join("");
+  }, 1000);
 }
 
-// ===== バックアップ & 復元 =====
-function backupData(){
-  const data = { mainDishes, hardDishes, sideDishes, soups };
+// --- 6. バックアップ ---
+function downloadBackup() {
   const blob = new Blob([JSON.stringify(data)], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = url;
-  a.download = `menu_backup_${new Date().toLocaleDateString()}.json`;
+  a.href = URL.createObjectURL(blob);
+  a.download = "my_menu.json";
   a.click();
 }
 
-function restoreData(event){
-  const file = event.target.files[0];
-  if(!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e){
-    try {
-      const data = JSON.parse(e.target.result);
-      mainDishes = data.mainDishes || [];
-      hardDishes = data.hardDishes || [];
-      sideDishes = data.sideDishes || [];
-      soups = data.soups || [];
-      saveData();
-      renderList();
-      alert("データを復元しました！");
-    } catch(err) {
-      alert("ファイルの読み込みに失敗しました。");
-    }
-  };
-  reader.readAsText(file);
-}
-
-// 初期実行
-renderList();
+// 起動時に表示
+refreshUI();
 </script>
 
 </body>
