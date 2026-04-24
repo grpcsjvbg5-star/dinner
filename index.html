@@ -2,123 +2,102 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>晩御飯ルーレット 完全版</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>晩御飯ルーレット iPhone版</title>
 
 <style>
-/* ===== デザイン設定 ===== */
+/* 全体デザイン */
 body {
-  font-family: sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   padding: 10px;
   background: linear-gradient(#fceabb, #f8b500);
   text-align: center;
   color: #333;
+  margin: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
-h2 { font-size: 28px; color: #5d4037; }
+h2 { font-size: 24px; color: #5d4037; margin: 15px 0; }
 
-/* ボタンのデザイン */
+/* ボタン */
 button {
   width: 90%;
   max-width: 400px;
-  padding: 15px;
-  margin: 10px 0;
-  font-size: 20px;
+  padding: 16px;
+  margin: 8px 0;
+  font-size: 18px;
   font-weight: bold;
   color: white;
   border: none;
-  border-radius: 15px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #ff6a88, #ff99ac);
-  box-shadow: 0 5px 0 #cc4b66;
+  box-shadow: 0 4px 0 #cc4b66;
   cursor: pointer;
 }
 
 button:active {
-  transform: translateY(3px);
+  transform: translateY(2px);
   box-shadow: 0 2px 0 #cc4b66;
 }
 
 /* 入力エリア */
 .input-section {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.8);
   margin: 10px auto;
-  padding: 15px;
-  border-radius: 15px;
-  max-width: 500px;
+  padding: 12px;
+  border-radius: 12px;
+  max-width: 450px;
 }
 
 input {
-  width: 60%;
+  width: 65%;
   padding: 10px;
   font-size: 16px;
   border-radius: 8px;
   border: 1px solid #ccc;
+  -webkit-appearance: none;
 }
 
-.small-btn {
+.add-btn {
   width: auto;
   padding: 10px 15px;
   font-size: 14px;
-  margin-left: 5px;
+  background: #5d4037;
+  box-shadow: 0 3px 0 #3e2723;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 /* 結果表示 */
 .day-card {
-  margin: 15px auto;
+  margin: 10px auto;
   padding: 15px;
-  max-width: 500px;
+  max-width: 450px;
   background: white;
   border-radius: 15px;
-  font-size: 22px;
+  font-size: 20px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-  animation: pop 0.3s ease;
 }
 
-@keyframes pop {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* ルーレットの見た目 */
-#roulette-box {
-  margin: 20px auto;
-  width: 80px;
-  height: 80px;
-  display: none;
-}
-
-.wheel-graphic {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: conic-gradient(#ff6a88, #ffcc70, #6a89ff, #6affc1);
-  animation: spin 0.2s linear infinite;
-}
-
-@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-/* テーブル一覧 */
+/* 一覧テーブル */
 table {
   width: 100%;
-  max-width: 800px;
-  margin: 20px auto;
+  margin: 20px 0;
   border-collapse: collapse;
   background: white;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 8px 4px;
   vertical-align: top;
-  text-align: center;
 }
 
 th { background: #ffcc70; }
 
-.delete-link {
+.del-text {
   color: #ff4444;
-  cursor: pointer;
   font-size: 11px;
   text-decoration: underline;
   display: block;
@@ -131,44 +110,38 @@ th { background: #ffcc70; }
 
 <h2>🍽 晩御飯ルーレット</h2>
 
-<button onclick="startRoulette('normal')">🎯 5日分決める</button>
-<button onclick="startRoulette('easy')">⚡ 手間料理を含めて決める</button>
+<button id="btn-normal">🎯 5日分決める</button>
+<button id="btn-hard" style="background:#ffcc70; color:#5d4037; box-shadow: 0 4px 0 #e6b866;">⚡ 手間料理を含める</button>
 
-<div id="roulette-box"><div class="wheel-graphic"></div></div>
 <div id="result-display"></div>
 
 <hr>
 
-<h3>メニューを追加する</h3>
+<h3>メニュー追加</h3>
 <div class="input-section">
-  <input type="text" id="addMain" placeholder="主菜（唐揚げなど）">
-  <button class="small-btn" onclick="handleAddItem('main')">追加</button>
+  <input type="text" id="in-main" placeholder="主菜">
+  <button class="add-btn" id="add-main">追加</button>
 </div>
 <div class="input-section">
-  <input type="text" id="addHard" placeholder="手間料理（カレーなど）">
-  <button class="small-btn" onclick="handleAddItem('hard')">追加</button>
+  <input type="text" id="in-hard" placeholder="手間主菜">
+  <button class="add-btn" id="add-hard">追加</button>
 </div>
 <div class="input-section">
-  <input type="text" id="addSide" placeholder="副菜（サラダなど）">
-  <button class="small-btn" onclick="handleAddItem('side')">追加</button>
+  <input type="text" id="in-side" placeholder="副菜">
+  <button class="add-btn" id="add-side">追加</button>
 </div>
 <div class="input-section">
-  <input type="text" id="addSoup" placeholder="汁物（味噌汁など）">
-  <button class="small-btn" onclick="handleAddItem('soup')">追加</button>
+  <input type="text" id="in-soup" placeholder="汁物">
+  <button class="add-btn" id="add-soup">追加</button>
 </div>
 
 <hr>
 
-<h3>登録済みメニュー</h3>
-<button class="small-btn" style="background:#4CAF50;" onclick="downloadBackup()">💾 バックアップを保存</button>
+<h3>一覧 / バックアップ</h3>
+<button id="btn-copy" style="background:#4CAF50; box-shadow:0 3px 0 #2e7d32; font-size:14px; width:auto; padding:10px;">📋 データをコピー</button>
 
 <table>
-  <tr>
-    <th>主菜</th>
-    <th>手間主菜</th>
-    <th>副菜</th>
-    <th>汁物</th>
-  </tr>
+  <tr><th>主菜</th><th>手間</th><th>副菜</th><th>汁物</th></tr>
   <tr>
     <td id="list-main"></td>
     <td id="list-hard"></td>
@@ -178,108 +151,87 @@ th { background: #ffcc70; }
 </table>
 
 <script>
-// --- 1. データ管理 ---
-let data = {
-  main: JSON.parse(localStorage.getItem("mains")) || ["唐揚げ","餃子","焼き魚"],
-  hard: JSON.parse(localStorage.getItem("hards")) || ["カレー","ハンバーグ"],
-  side: JSON.parse(localStorage.getItem("sides")) || ["サラダ","冷奴"],
-  soup: JSON.parse(localStorage.getItem("soups")) || ["味噌汁"]
+// --- データ管理 ---
+let menu = {
+  main: JSON.parse(localStorage.getItem("menu_main")) || ["唐揚げ","餃子"],
+  hard: JSON.parse(localStorage.getItem("menu_hard")) || ["カレー","バーグ"],
+  side: JSON.parse(localStorage.getItem("menu_side")) || ["サラダ","冷奴"],
+  soup: JSON.parse(localStorage.getItem("menu_soup")) || ["味噌汁"]
 };
 
-// --- 2. 画面への反映機能 ---
-function refreshUI() {
-  const types = ['main', 'hard', 'side', 'soup'];
-  
-  types.forEach(type => {
-    const td = document.getElementById(`list-${type}`);
-    td.innerHTML = ""; // 一旦空にする
-    
-    data[type].forEach((name, index) => {
-      const itemDiv = document.createElement("div");
-      itemDiv.style.marginBottom = "10px";
-      itemDiv.innerHTML = `${name} <span class="delete-link" onclick="handleRemoveItem('${type}', ${index})">削除</span>`;
-      td.appendChild(itemDiv);
+// --- UI更新 ---
+function updateUI() {
+  const cats = ['main', 'hard', 'side', 'soup'];
+  cats.forEach(c => {
+    const td = document.getElementById(`list-${c}`);
+    td.innerHTML = "";
+    menu[c].forEach((item, i) => {
+      const div = document.createElement("div");
+      div.innerHTML = `${item}<span class="del-text" onclick="doRemove('${c}',${i})">削除</span><br>`;
+      td.appendChild(div);
     });
-    
-    // 保存
-    localStorage.setItem(`${type}s`, JSON.stringify(data[type]));
+    localStorage.setItem(`menu_${c}`, JSON.stringify(menu[c]));
   });
 }
 
-// --- 3. 追加アクション ---
-function handleAddItem(type) {
-  // 入力欄のIDを特定
-  const inputId = "add" + type.charAt(0).toUpperCase() + type.slice(1);
-  const inputEl = document.getElementById(inputId);
-  const val = inputEl.value.trim();
-
-  if (!val) {
-    alert("文字を入力してください");
-    return;
-  }
-
-  data[type].push(val); // 配列に追加
-  inputEl.value = "";   // 入力欄をクリア
-  refreshUI();          // 画面更新
+// --- 追加処理 ---
+function doAdd(c) {
+  const input = document.getElementById(`in-${c}`);
+  const val = input.value.trim();
+  if(!val) return;
+  menu[c].push(val);
+  input.value = "";
+  updateUI();
 }
 
-// --- 4. 削除アクション ---
-function handleRemoveItem(type, index) {
-  if (confirm("本当に削除しますか？")) {
-    data[type].splice(index, 1);
-    refreshUI();
+// --- 削除処理 ---
+window.doRemove = function(c, i) {
+  if(confirm("削除しますか？")) {
+    menu[c].splice(i, 1);
+    updateUI();
   }
-}
+};
 
-// --- 5. ルーレット実行 ---
-function startRoulette(mode) {
-  const resultArea = document.getElementById("result-display");
-  const rBox = document.getElementById("roulette-box");
+// --- ルーレット ---
+function doRoulette(mode) {
+  const disp = document.getElementById("result-display");
+  disp.innerHTML = "ルーレット中...";
   
-  resultArea.innerHTML = "";
-  rBox.style.display = "block";
-
   setTimeout(() => {
-    rBox.style.display = "none";
+    let pool = (mode === 'hard') ? [...menu.main, ...menu.hard] : [...menu.main];
+    if(pool.length === 0) { alert("メニューを登録してください"); return; }
     
-    // メニューの選定
-    let pool = [];
-    if (mode === 'normal') {
-      pool = [...data.main];
-    } else {
-      pool = [...data.main, ...data.hard];
-    }
-
-    if (pool.length === 0) {
-      alert("メニューを登録してください");
-      return;
-    }
-
-    // 5日分シャッフル
-    let selectedMains = [...pool].sort(() => 0.5 - Math.random()).slice(0, 5);
-
-    resultArea.innerHTML = selectedMains.map((dish, i) => `
+    let selected = pool.sort(() => 0.5 - Math.random()).slice(0, 5);
+    disp.innerHTML = selected.map((d, i) => `
       <div class="day-card">
-        <div style="font-size:14px; color:#999;">${i+1}日目</div>
-        🍖 ${dish}<br>
-        🥗 ${data.side[Math.floor(Math.random()*data.side.length)] || "なし"}<br>
-        🍲 ${data.soup[Math.floor(Math.random()*data.soup.length)] || "なし"}
+        Day ${i+1}: <b>${d}</b><br>
+        <span style="font-size:14px;">🥗 ${menu.side[Math.floor(Math.random()*menu.side.length)] || "-"} / 🍲 ${menu.soup[Math.floor(Math.random()*menu.soup.length)] || "-"}</span>
       </div>
     `).join("");
-  }, 1000);
+  }, 500);
 }
 
-// --- 6. バックアップ ---
-function downloadBackup() {
-  const blob = new Blob([JSON.stringify(data)], {type:"application/json"});
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "my_menu.json";
-  a.click();
+// --- iPhone用コピー機能 ---
+function copyData() {
+  const text = JSON.stringify(menu);
+  navigator.clipboard.writeText(text).then(() => {
+    alert("データをコピーしました！メモ帳などに貼り付けて保存してください。");
+  }).catch(() => {
+    alert("コピーに失敗しました。");
+  });
 }
 
-// 起動時に表示
-refreshUI();
+// --- イベント登録（iPhoneで確実に動かすため） ---
+document.getElementById("add-main").addEventListener("click", () => doAdd('main'));
+document.getElementById("add-hard").addEventListener("click", () => doAdd('hard'));
+document.getElementById("add-side").addEventListener("click", () => doAdd('side'));
+document.getElementById("add-soup").addEventListener("click", () => doAdd('soup'));
+document.getElementById("btn-normal").addEventListener("click", () => doRoulette('normal'));
+document.getElementById("btn-hard").addEventListener("click", () => doRoulette('hard'));
+document.getElementById("btn-copy").addEventListener("click", copyData);
+
+// 初期起動
+updateUI();
 </script>
 
 </body>
